@@ -31,9 +31,9 @@ const Canvas = ({  }) => {
 
   return (
     <canvas
-    ref={canvasRef}
-    width={canvasSize.width}
-    height={canvasSize.height}
+      ref={canvasRef}
+      width={canvasSize.width}
+      height={canvasSize.height}
     />
   );
 };
