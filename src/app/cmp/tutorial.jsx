@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import NextText from './nextText';
 import { gsap } from "gsap";
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 
 gsap.registerPlugin(MotionPathPlugin);
 
-const Tutorial = () => {
+const Tutorial = ({ timer, setTimer }) => {
 
-  const [timer, setTimer] = useState(true);
   const textRef1 = useRef(null);
   const imageRef1 = useRef(null);
   const pathRef1 = useRef(null);
@@ -30,6 +29,11 @@ const Tutorial = () => {
   }, []);
 
   useEffect(() => {
+    if (!timer) {
+      gsap.globalTimeline.clear();
+      return;
+    }
+
     const path1 = pathRef1.current;
     const svg1 = svgRef1.current;
     const pathLength1 = path1.getTotalLength();
@@ -111,12 +115,12 @@ const Tutorial = () => {
     .to(textRef3.current, { opacity: 0, y: 50, duration: 0 })
     .to(textRef3.current, { opacity: 1, y: 0, duration: 2, delay: 2.5 })
     .to(textRef3.current, { opacity: 0, y: 50, duration: 2, delay: 0.5 });
-  }, []);
+  }, [timer]);
 
   return (
     <>
       {timer && (
-        <div className='fixed flex w-screen h-screen bg-black bg-opacity-25 justify-center items-center' onClick={() => setTimer(false)}>
+        <div className='fixed w-screen h-screen bg-black bg-opacity-25 flex justify-center items-center' onClick={() => setTimer(false)}>
           <h2 className='text-white text-[32px] font-bold text-center'>
             今の感情を色に例えると何色かな？<br/>（ 指でなぞる ）
           </h2>
