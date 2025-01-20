@@ -19,3 +19,10 @@ body {
   background: var(--background);
   font-family: 'Noto Sans JP', sans-serif;
 }
+
+.swiper-button-prev::after{
+  display: none;
+}
+.swiper-button-next::after{
+  display: none;
+}
