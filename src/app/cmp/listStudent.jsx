@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link'
 import supabase from '../supabase'; // Supabaseクライアントをインポート
 import QRCode from 'react-qr-code'; // QRコード生成用ライブラリをインポート
 import html2canvas from 'html2canvas'; // スクリーンショットを撮るためのライブラリをインポート
@@ -8,6 +9,13 @@ const listStudent = ({ starData, starView, setStarView }) => {
   const captureRef = useRef(null); // スクリーンショット対象の要素参照
   const [imageUrl, setImageUrl] = useState(null); // アップロード後の画像URL
   const [uploading, setUploading] = useState(false); // アップロード中の状態
+
+  // starView が true になったときにスクリーンショットを撮る
+  useEffect(() => {
+    if (starView) {
+      handleScreenshot(); // starView が true のときにスクリーンショットを撮る
+    }
+  }, [starView]); // starView が変更されるたびに実行される
 
   // スクリーンショットを撮る
   const handleScreenshot = async () => {
@@ -61,45 +69,66 @@ const listStudent = ({ starData, starView, setStarView }) => {
 
   return (
     <div className='fixed w-screen h-screen top-0 left-0 bg-[#E6EBEF] z-10'>
-      {/* <div
-        className='fixed w-screen h-screen top-0 left-0'
-        onClick={() => setSelectView(!selectView)}
-      /> */}
+
+      <header className="w-screen relative h-[60px] bg-white shadow-lg flex justify-center items-center">
+        <Link
+          href='/'
+          className='absolute left-8 top-1/2 transform -translate-y-1/2 text-[16px] py-2 px-5 text-black rounded-full'
+          style={{boxShadow: '0 0px 8px rgba(0, 0, 0, 0.25)'}}
+        >TOP</Link>
+        <p className="font-bold text-xl text-black">気になるリスト</p>
+      </header>
 
       <div
-        ref={captureRef}
-        className="flex bg-[#E6EBEF]"
+        className='flex justify-center items-center h-full'
+        style={{height: 'calc(100vh - 60px)'}}
       >
-        {starData.map((e) => (
+        <div className='relative mx-5'>
           <div
-            key={e.expo_number}
-            className="w-[55px] h-[55px] rounded-full border-white border-4"
-            style={{ backgroundColor: e.color }}
+            ref={captureRef}
+            className="flex flex-wrap w-fit max-w-[410px] p-[10px]"
           >
-            <p className="w-[47px] text-white text-center text-2xl font-bold -mt-[3px]" >
-              {e.expo_number}
-            </p>
+            {starData.map((e) => (
+              <div
+                key={e.expo_number}
+                className="w-[55px] h-[55px] rounded-full m-[5px]"
+                style={{ backgroundColor: e.color }}
+              >
+                <p className="w-[55px] text-white text-center text-2xl font-bold" >
+                  {e.expo_number}
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
+
+          <div
+            className="flex flex-wrap w-fit absolute top-0 left-0 max-w-[410px] p-[10px] rounded-xl"
+            style={{boxShadow: 'inset 0 0px 8px rgba(0, 0, 0, 0.25)'}}
+          >
+            {starData.map((e) => (
+              <div
+                key={e.expo_number}
+                className="w-[55px] h-[55px] rounded-full border-white border-4 m-[5px] flex items-center"
+                style={{ backgroundColor: e.color }}
+              >
+                <p className="w-[47px] text-white text-center text-2xl font-bold -mt-[2px]" >
+                  {e.expo_number}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className='w-[320px] h-[320px] mx-5 flex justify-center items-center bg-white rounded-xl'>
+          {uploading && <p className="text-black text-xl font-bold">アップロード中...</p>}
+          {imageUrl && (
+            <QRCode value={imageUrl} size={256} />
+          )}
+        </div>
       </div>
-      <button
-          onClick={handleScreenshot}
-          className="bg-blue-500 text-white py-2 px-4 rounded"
-        >
-          スクリーンショットを撮る
-        </button>
-        {uploading && <p className="text-white text-xl mt-4">アップロード中...</p>} {/* アップロード中メッセージ */}
 
-{imageUrl && (
-  <div className="mt-6 flex flex-col items-center">
-    <h3 className="text-white text-2xl md:text-3xl font-semibold">保存した画像のQRコード</h3>
-    <div className="mt-4">
-      <QRCode value={imageUrl} size={256} />
     </div>
-  </div>
-)}
-    </div>
-  )
-}
+  );
+};
 
-export default listStudent
+export default listStudent;
