@@ -65,33 +65,17 @@ const listStudent = ({ starData, starView, setStarView }) => {
         className='fixed w-screen h-screen top-0 left-0'
         onClick={() => setSelectView(!selectView)}
       /> */}
-   <div 
-      ref={captureRef} 
-      className="flex relative -z-10 flex-wrap bg-[#E6EBEF] w-fit p-5 rounded-xl shadow-[inset_0_0_8px_rgba(0,0,0,0.25)] max-w-[390px]"
-    >
-      {starData.map((e) => (
-        <div
-          key={e.expo_number}
-          style={{ backgroundColor: e.color }}
-          className="m-[5px] rounded-full w-[55px] h-[55px] border-4 border-white flex items-center justify-center"
-        >
-          <p className="font-bold text-2xl text-white pb-1">
-            {e.expo_number}
-          </p>
-        </div>
-      ))}
-    </div>
 
-    <div 
-      className="flex absolute top-0 left-0 -z-10 flex-wrap bg-[#E6EBEF] w-fit p-5 rounded-xl shadow-[inset_0_0_8px_rgba(0,0,0,0.25)] max-w-[390px]"
+    <div
+      ref={captureRef}
+      className="flex absolute -z-10 bg-[#E6EBEF]"
     >
       {starData.map((e) => (
         <div
           key={e.expo_number}
-          style={{ backgroundColor: e.color }}
-          className="m-[5px] rounded-full w-[55px] h-[55px] border-4 border-white flex items-center justify-center"
+          className="relative z-10"
         >
-          <p className="font-bold text-2xl text-white">
+          <p className="font-bold text-2xl text-white w-[55px] text-center m-[5px] pb-2" style={{ backgroundColor: e.color }}>
             {e.expo_number}
           </p>
         </div>
