@@ -9,11 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.48.0",
     "gsap": "^3.12.7",
+    "html2canvas": "^1.4.1",
     "microcms-js-sdk": "^3.1.2",
     "next": "15.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-qr-code": "^2.0.15",
     "swiper": "^11.2.1"
   },
   "devDependencies": {
