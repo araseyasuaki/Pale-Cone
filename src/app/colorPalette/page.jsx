@@ -11,8 +11,8 @@ const Page = () => {
 
   return (
     <div className='relative w-screen h-screen'>
-      <Tutorial timer={timer} setTimer={setTimer}/>
-      <Question timer={timer}/>
+      {/* <Tutorial timer={timer} setTimer={setTimer}/>
+      <Question timer={timer}/> */}
       <Canvas/>
     </div>
   );
