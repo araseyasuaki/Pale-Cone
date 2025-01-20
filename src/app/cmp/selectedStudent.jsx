@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import ListStudent from '@/app/cmp/listStudent';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
-import Image from 'next/image'
+import NextText from '@/app/cmp/nextText';
+import Image from 'next/image';
+import Link from 'next/link'
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import '../globals.css';
 
 const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
   const colorCodes = [
@@ -15,37 +18,29 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
     "#AF7AC5", "#F5B041", "#85C1E9", "#45B39D", "#E74C3C"
   ];
 
-  // 背景色メイン
   const [bgColorMain, setBgColorMain] = useState('');
-  // 背景色サブ
   const [bgColorSub, setBgColorSub] = useState('');
-  // お気に入り学生
   const [starData, setStarData] = useState([]);
-  // お気に色画面状態管理
-  const [starView, setStarView] = useState(false)
+  const [starView, setStarView] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  // 背景色切り替え
   const handleSlideChange = (swiper) => {
     if (!selectedDatas || selectedDatas.length === 0) return;
     const realIndex = swiper.realIndex;
-    console.log(realIndex)
     const currentData = selectedDatas[realIndex];
-    console.log(currentData)
     if (currentData) {
       setBgColorMain(currentData.color || '#000');
       setBgColorSub(colorCodes[realIndex % colorCodes.length] || '#FFF');
     }
+    setCurrentSlide(realIndex);
   };
 
   const toggleStar = (e) => {
     setStarData((prevstar) => {
-      // すでに登録済みか確認
       const exists = prevstar.some(item => item.expo_number === e.expo_number);
       if (exists) {
-        // 存在していれば削除
         return prevstar.filter(item => item.expo_number !== e.expo_number);
       } else {
-        // 存在していなければ追加
         return [...prevstar, { expo_number: e.expo_number, color: e.color }];
       }
     });
@@ -53,100 +48,142 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
 
   return (
     <div
-      className='fixed w-screen h-screen top-0 left-0'
+      className="fixed w-screen h-screen top-0 left-0"
       style={{ background: `linear-gradient(to bottom right, ${bgColorMain}, ${bgColorSub})` }}
     >
       <div
-        className='fixed w-screen h-screen top-0 left-0 -z-10'
+        className="fixed w-screen h-screen top-0 left-0 -z-10"
         onClick={() => setSelectView(!selectView)}
       />
-      <div style={{ width: '80%', margin: 'auto' }}>
+      <header className="w-screen relative h-[60px] bg-white shadow-lg flex justify-center items-center">
+        <Link
+          href='/'
+          className='absolute left-8 top-1/2 transform -translate-y-1/2 text-[16px] py-2 px-5 text-black rounded-full'
+          style={{boxShadow: '0 0px 8px rgba(0, 0, 0, 0.25)'}}
+        >TOP</Link>
+        <p className="font-bold text-xl text-black">発見した学生一覧</p>
+      </header>
+      <div className="w-[60%] m-auto mt-[3%] relative">
         <Swiper
           modules={[Pagination, Navigation]}
-          pagination={{
-            clickable: true,
-            dynamicBullets: true,
-            renderBullet: (index, className) => {
-              return `<span class="${className}">${index + 1}</span>`;
-            },
-          }}
+          pagination={false}
           slidesPerView={1}
           spaceBetween={20}
           loop={true}
           centeredSlides={true}
-          navigation
+          navigation={{
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          }}
           onSlideChange={handleSlideChange}
+          style={{ paddingBottom: '40px' }}
         >
           {selectedDatas.map((e) => (
             <SwiperSlide key={e.id}>
               <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '150px',
-                  background: '#f3f4f6',
-                  border: '1px solid #ddd',
-                  borderRadius: '8px',
-                  position: 'relative',
-                }}
+                className="w-full h-full m-auto bg-[#E6EBEF] rounded-xl"
+                style={{ height: "67vh" }}
               >
-                <h3>{e.name}</h3>
-                <button
-                  style={{
-                    position: 'absolute',
-                    bottom: '10px',
-                    right: '10px',
-                    padding: '5px 10px',
-                    background: starData.some(item => item.expo_number === e.expo_number) ? '#FF5733' : '#ddd',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => toggleStar(e)}
-                >
-                  {starData.some(item => item.expo_number === e.expo_number) ? 'チェック中' : '気になる'}
-                </button>
+                <div className="bg-white rounded-tl-xl rounded-tr-xl relative p-4">
+                  <div className='flex items-end'>
+                    <p className="text-4xl font-bold text-black">{e.expo_number}</p>
+                    <p className="text-4xl font-bold text-black ml-6">{e.name}</p>
+                    <div className='ml-2'>
+                      <p className={`text-[16px] font-bold px-2 ${
+                          e.grade === '2年' ? 'text-orange-500 border-2 border-orange-500' :
+                          e.grade === '1年' ? 'text-blue-500 border-2 border-blue-500' :
+                          'text-black border-2'
+                        }`}
+                      >
+                        {e.grade}生
+                      </p>
+                    </div>
+                  </div>
 
+                  <div className='flex items-center mt-1'>
+                    <div
+                      className='w-5 h-5 rounded-full'
+                      style={{backgroundColor: e.color}}
+                    />
+                    <p className='ml-4'>#{e.features_1}</p>
+                    <p className='ml-2'>#{e.features_2}</p>
+                    <p className='ml-2'>#{e.features_3}</p>
+                  </div>
+                  <button
+                      className="absolute top-1/2 transform -translate-y-1/2 right-[16px] py-[5px] w-[160px] text-xl text-black rounded-full"
+                      style={{
+                        boxShadow: starData.some(item => item.expo_number === e.expo_number)
+                          ? 'inset 0 0px 8px rgba(0, 0, 0, 0.25)'
+                          : '0 0px 8px rgba(0, 0, 0, 0.25)',
+                        backgroundColor: starData.some(item => item.expo_number === e.expo_number)
+                          ? '#E6EBEF'  // 外側の均等な影
+                          : '#fff',
+                      }}
+                      onClick={() => toggleStar(e)}
+                    >
+                      {starData.some(item => item.expo_number === e.expo_number)
+                        ? 'チェック中'
+                        : '気になる'}
+                  </button>
+                </div>
+                <div
+                  className="flex w-full h-full justify-center items-center px-20 overflow-y-scroll"
+                  style={{ height: "calc(100% - 100px)" }}
+                >
+                  <p className="text-2xl text-black">{e.forward}</p>
+                </div>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
+
+        {/* ページネーション表示 */}
+        <div className="absolute bottom-0 left-0 w-full text-center">
+          <p className="text-xl font-bold text-white">
+            {currentSlide + 1} / {selectedDatas.length}
+          </p>
+        </div>
+
+        {/* カスタムナビゲーションボタン */}
+        <div className="swiper-button-prev absolute top-1/2 left-[-15%] transform -translate-y-1/2 w-[10%]">
+          <Image src="/hidari.png" alt="前へ" width={108} height={121} />
+        </div>
+        <div className="swiper-button-next absolute top-1/2 right-[-15%] transform -translate-y-1/2 w-[10%]">
+          <Image src="/migi.png" alt="次へ" width={108} height={121} />
+        </div>
       </div>
       <button
-        className='fixed bottom-8 left-8 w-[190px] h-[70px] bg-white rounded-full z-20'
+        className="fixed bottom-8 left-8 w-[190px] h-[70px] bg-white rounded-full z-20"
         onClick={() => setStarView(!starView)}
-        disabled={starData.length == 0}
-        style={{opacity: starData.length === 0 ? 0.5 : 1,}}
+        disabled={starData.length === 0}
+        style={{ opacity: starData.length === 0 ? 0.5 : 1 }}
       >
         {starView ? (
-          <div className='flex items-center ml-[19px]'>
+          <div className="flex items-center ml-[19px]">
             <div className="relative w-8 h-8 flex justify-center items-center">
               <div className="absolute w-[22px] h-[2px] bg-black rounded-full transform rotate-45"></div>
               <div className="absolute w-[22px] h-[2px] bg-black rounded-full transform -rotate-45"></div>
             </div>
-            <p className='tex-[16px] font-bold mx-auto'>閉じる</p>
+            <p className="tex-[16px] font-bold mx-auto">閉じる</p>
           </div>
-        ):(
-          <div className='flex items-cente'>
+        ) : (
+          <div className="flex items-center">
             <Image
               src="/qrCode.webp"
               width={30}
               height={30}
               alt="気になるリストのQRコード"
-              className='ml-5'
+              className="ml-5"
             />
-            <p className='tex-[16px] font-bold h-fit my-[3px] ml-2'>気になるリスト</p>
+            <p className="tex-[16px] font-bold h-fit my-[3px] ml-2">気になるリスト</p>
           </div>
         )}
       </button>
 
       {starView && (
-        <ListStudent starData={starData} starView={starView} setStarView={setStarView}/>
+        <ListStudent starData={starData} starView={starView} setStarView={setStarView} />
       )}
-
+      <NextText text={'空白部分をタップして閉じる'} color={'#fff'}/>
     </div>
   );
 };
