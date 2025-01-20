@@ -10,7 +10,7 @@ const rgbConverter = (hex) => {
       r: parseInt(result[1], 16),
       g: parseInt(result[2], 16),
       b: parseInt(result[3], 16),
-      }
+    }
     : null;
 };
 
@@ -174,7 +174,11 @@ const Canvas = () => {
 
     return {
       width: maxX - minX,
-      height: maxY - minY
+      height: maxY - minY,
+      minX,
+      maxX,
+      minY,
+      maxY
     };
   };
 
@@ -182,72 +186,29 @@ const Canvas = () => {
   const calculateBubblePosition = (pathCenter) => {
     const BUBBLE_WIDTH = 200;
     const BUBBLE_HEIGHT = 100;
-    const PADDING = 20;
-    const SPACING = 0; // パスと吹き出しの間の最小距離
+    const SPACING = 50; // パスと吹き出しの間の距離
 
-    // キャンバスを4つの領域に分割
+    // キャンバスの中央のX座標を計算
     const middleX = canvasSize.width / 2;
-    const middleY = canvasSize.height / 2;
-
-    // パスの中心がどの領域にあるかを判定
-    const isRight = pathCenter.x > middleX;
-    const isBottom = pathCenter.y > middleY;
-
-    let bubbleX, bubbleY;
-
-    if (isRight && !isBottom) {
-      // 右上の場合 → 左下に表示
-      bubbleX = Math.max(PADDING, pathCenter.x - BUBBLE_WIDTH - SPACING);
-      bubbleY = Math.min(
-        canvasSize.height - BUBBLE_HEIGHT - PADDING,
-        pathCenter.y + SPACING
-      );
-    } else if (!isRight && !isBottom) {
-      // 左上の場合 → 右下に表示
-      bubbleX = Math.min(
-        canvasSize.width - BUBBLE_WIDTH - PADDING,
-        pathCenter.x + SPACING
-      );
-      bubbleY = Math.min(
-        canvasSize.height - BUBBLE_HEIGHT - PADDING,
-        pathCenter.y + SPACING
-      );
-    } else if (isRight && isBottom) {
-      // 右下の場合 → 左上に表示
-      bubbleX = Math.max(PADDING, pathCenter.x - BUBBLE_WIDTH - SPACING);
-      bubbleY = Math.max(PADDING, pathCenter.y - BUBBLE_HEIGHT - SPACING);
-    } else {
-      // 左下の場合 → 右上に表示
-      bubbleX = Math.min(
-        canvasSize.width - BUBBLE_WIDTH - PADDING,
-        pathCenter.x + SPACING
-      );
-      bubbleY = Math.max(PADDING, pathCenter.y - BUBBLE_HEIGHT - SPACING);
-    }
-
-    // パスの大きさを考慮して位置を更に調整
-    const pathBounds = getPathBounds(pathData);
-    const additionalSpacing = Math.max(
-      pathBounds.width,
-      pathBounds.height
-    ) / 2;
-
-    // パスの大きさに応じて吹き出しの位置を更に調整
-    if (isRight) {
-      bubbleX -= additionalSpacing;
-    } else {
-      bubbleX += additionalSpacing;
-    }
     
-    if (isBottom) {
-      bubbleY -= additionalSpacing;
+    // パスの範囲を取得
+    const pathBounds = getPathBounds(pathData);
+    
+    let bubbleX;
+
+    if (pathCenter.x > middleX) {
+      // パスが右側にある場合、パスの左端からSPACING分左に表示
+      bubbleX = pathBounds.minX - BUBBLE_WIDTH - SPACING;
     } else {
-      bubbleY += additionalSpacing;
+      // パスが左側にある場合、パスの右端からSPACING分右に表示
+      bubbleX = pathBounds.maxX + SPACING;
     }
 
-    // キャンバスの境界をチェック
-    bubbleX = Math.max(PADDING, Math.min(canvasSize.width - BUBBLE_WIDTH - PADDING, bubbleX));
-    bubbleY = Math.max(PADDING, Math.min(canvasSize.height - BUBBLE_HEIGHT - PADDING, bubbleY));
+    // Y座標は画面の中央に配置
+    const bubbleY = (canvasSize.height - BUBBLE_HEIGHT) / 2;
+
+    // キャンバスの境界をチェック（画面外にはみ出さないように）
+    bubbleX = Math.max(0, Math.min(canvasSize.width - BUBBLE_WIDTH, bubbleX));
 
     return { x: bubbleX, y: bubbleY };
   };
@@ -277,22 +238,27 @@ const Canvas = () => {
     setSelectedDatas(selectedData);
     drawCanvas(pathData, selectedData);
 
-    // パスの中心を計算
-    const centerX = pathData.reduce((sum, point) => sum + point.x, 0) / pathData.length;
-    const centerY = pathData.reduce((sum, point) => sum + point.y, 0) / pathData.length;
-    
-    // 新しい吹き出しの位置を計算
-    const newBubblePosition = calculateBubblePosition({ x: centerX, y: centerY });
-    setBubblePosition(newBubblePosition);
+    if (pathData.length > 0) {
+      // パスの中心を計算
+      const centerX = pathData.reduce((sum, point) => sum + point.x, 0) / pathData.length;
+      const centerY = pathData.reduce((sum, point) => sum + point.y, 0) / pathData.length;
+      
+      // 新しい吹き出しの位置を計算
+      const newBubblePosition = calculateBubblePosition({ x: centerX, y: centerY });
+      setBubblePosition(newBubblePosition);
+    }
   };
-        // タッチした時
+
+  // タッチした時
   const handleTouchStart = (e) => {
     handleMouseDown(e);
   };
+
   // タッチでドラックしているとき
   const handleTouchMove = (e) => {
     handleMouseMove(e);
   };
+
   // タッチが終わった時
   const handleTouchEnd = () => {
     handleMouseUp();
@@ -350,28 +316,38 @@ const Canvas = () => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-                // タッチした時
-                onTouchStart={handleTouchStart}
-                // タッチでドラックしているとき
-                onTouchMove={handleTouchMove}
-                // タッチが終わった時
-                onTouchEnd={handleTouchEnd}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       />
       {bubblePosition && bubblePosition.x !== 0 && bubblePosition.y !== 0 && (
-        <div className='bg-white bg-opacity-75 p-10 rounded-lg text-center' style={{ position: 'absolute', left: bubblePosition.x, top: bubblePosition.y, }}>
+        <div 
+          className='bg-white bg-opacity-75 p-10 rounded-lg text-center' 
+          style={{ 
+            position: 'absolute', 
+            left: bubblePosition.x, 
+            top: bubblePosition.y,
+          }}
+        >
           <p className='text-2xl font-bold'>学生{selectedDatas.length}人を発見した</p>
           <button
             className='text-white text-2xl font-bold py-[11px] bg-black w-full rounded-full mt-8'
-            style={{opacity: selectedDatas.length === 0 ? 0.2 : 1,}}
-            onClick={(() => setSelectView(!selectView))}
-            disabled={selectedDatas.length == 0}
+            style={{
+              opacity: selectedDatas.length === 0 ? 0.2 : 1,
+            }}
+            onClick={() => setSelectView(!selectView)}
+            disabled={selectedDatas.length === 0}
           >
             見る
           </button>
         </div>
       )}
       {selectView && (
-        <SelectedStudent selectedDatas={selectedDatas} selectView={selectView} setSelectView={setSelectView}/>
+        <SelectedStudent 
+          selectedDatas={selectedDatas} 
+          selectView={selectView} 
+          setSelectView={setSelectView}
+        />
       )}
     </div>
   );
