@@ -66,21 +66,22 @@ const listStudent = ({ starData, starView, setStarView }) => {
         onClick={() => setSelectView(!selectView)}
       /> */}
 
-    <div
-      ref={captureRef}
-      className="flex bg-[#E6EBEF] pb-5"
-    >
-      {starData.map((e) => (
-        <div
-          key={e.expo_number}
-          className="relative z-10"
-        >
-          <p className="font-bold text-2xl w-[55px] text-center m-[5px] leading-[24px] -mt-1" style={{ backgroundColor: e.color }}>
-            {e.expo_number}
-          </p>
-        </div>
-      ))}
-    </div>
+      <div
+        ref={captureRef}
+        className="flex bg-[#E6EBEF]"
+      >
+        {starData.map((e) => (
+          <div
+            key={e.expo_number}
+            className="w-[55px] h-[55px] rounded-full border-white border-4"
+            style={{ backgroundColor: e.color }}
+          >
+            <p className="w-[47px] text-white text-center text-2xl font-bold -mt-[3px]" >
+              {e.expo_number}
+            </p>
+          </div>
+        ))}
+      </div>
       <button
           onClick={handleScreenshot}
           className="bg-blue-500 text-white py-2 px-4 rounded"
