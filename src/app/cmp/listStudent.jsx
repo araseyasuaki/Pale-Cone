@@ -68,14 +68,14 @@ const listStudent = ({ starData, starView, setStarView }) => {
 
     <div
       ref={captureRef}
-      className="flex absolute -z-10 bg-[#E6EBEF]"
+      className="flex bg-[#E6EBEF]"
     >
       {starData.map((e) => (
         <div
           key={e.expo_number}
           className="relative z-10"
         >
-          <p className="font-bold text-2xl text-white w-[55px] text-center m-[5px] pb-2" style={{ backgroundColor: e.color }}>
+          <p className="font-bold text-2xl w-[55px] text-center m-[5px] leading-[24px] -mt-1" style={{ color: e.color }}>
             {e.expo_number}
           </p>
         </div>
