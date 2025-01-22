@@ -138,10 +138,16 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
         </div>
 
         {/* カスタムナビゲーションボタン */}
-        <div className="swiper-button-prev absolute top-1/2 left-[-15%] transform -translate-y-1/2 w-[10%]">
+        <div
+          className="swiper-button-prev absolute top-1/2 transform -translate-y-1/2 w-[10%]"
+          style={{left: '-15%'}}
+        >
           <Image src="/hidari.png" alt="前へ" width={108} height={121} />
         </div>
-        <div className="swiper-button-next absolute top-1/2 right-[-15%] transform -translate-y-1/2 w-[10%]">
+        <div
+          className="swiper-button-next absolute top-1/2 right-[-15%] transform -translate-y-1/2 w-[10%]"
+          style={{right: '-15%'}}
+        >
           <Image src="/migi.png" alt="次へ" width={108} height={121} />
         </div>
       </div>
