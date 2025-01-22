@@ -25,7 +25,7 @@ const hslConverter = (r, g, b) => {
   let h, s, l = (max + min) / 2;
 
   if (max === min) {
-    h = 0; // グレースケールの場合は色相を0に設定
+    h = 0;
     s = 0;
   } else {
     const d = max - min;
@@ -50,24 +50,68 @@ const hslConverter = (r, g, b) => {
 
 const Canvas = () => {
   const canvasRef = useRef(null);
-  // 画面サイズ
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
-  // 学生情報
   const [userData, setUserData] = useState([]);
-  // 座標情報
   const [studentCoordinates, setStudentCoordinates] = useState([]);
-  // パス情報
   const [pathData, setPathData] = useState([]);
-  // パス内学生情報
   const [selectedDatas, setSelectedDatas] = useState([]);
-  // クリック状態
   const [drawing, setDrawing] = useState(false);
-  // 吹き出し位置
   const [bubblePosition, setBubblePosition] = useState({ x: 0, y: 0 });
-  // セレクトされた学生画面
   const [selectView, setSelectView] = useState(false);
 
-  // 画面サイズ
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [oorData, setOorData] = useState([]);
+  const [oorNoData, setOorNoData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/students');
+        const result = await response.json();
+
+        if (response.ok) {
+          setData(result);
+        } else {
+          throw new Error(result.error || 'データ取得に失敗しました');
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      const updatedOorData = selectedDatas.map(item => {
+        const matchingData = data.filter(d => d.student_number === item.id);
+        return matchingData.length > 0 ? matchingData : [];
+      });
+      setOorData(updatedOorData);
+    }
+  }, [data, selectedDatas]);
+
+  useEffect(() => {
+    let colorCodes = [];
+
+    if (oorData && oorData.length > 0) {
+      colorCodes = oorData.map(item => {
+        if (item.length > 0 && item[0].current_impression_color) {
+          return item[0].current_impression_color;
+        } else {
+          return [];
+        }
+      });
+    }
+
+    setOorNoData(colorCodes);
+  }, [oorData]);
+
   useEffect(() => {
     const viewResize = () => {
       setCanvasSize({
@@ -82,7 +126,6 @@ const Canvas = () => {
     };
   }, []);
 
-  // 背景描画
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -96,7 +139,6 @@ const Canvas = () => {
     }
   }, [canvasSize]);
 
-  // 学生情報取得
   useEffect(() => {
     const fetchData = async () => {
       const limit = 100;
@@ -119,7 +161,6 @@ const Canvas = () => {
     fetchData();
   }, []);
 
-  // 学生の座標計算
   useEffect(() => {
     const studentCoordinate = userData.map((e) => {
       const rgb = rgbConverter(e.color);
@@ -135,7 +176,6 @@ const Canvas = () => {
     setStudentCoordinates(studentCoordinate);
   }, [userData, canvasSize]);
 
-  // 座標の相対位置を計算
   const getRelativeCoordinates = (e) => {
     const canvasPosition = canvasRef.current.getBoundingClientRect();
     if (e.touches) {
@@ -146,7 +186,6 @@ const Canvas = () => {
     }
   };
 
-  // パス内に学生がいるかを判定
   const judgmentChain = (path, px, py) => {
     const ctx = canvasRef.current.getContext('2d');
     ctx.beginPath();
@@ -156,7 +195,6 @@ const Canvas = () => {
     return ctx.isPointInPath(px, py);
   };
 
-  // パスの範囲を計算する関数
   const getPathBounds = (path) => {
     if (path.length === 0) return { width: 0, height: 0 };
 
@@ -182,45 +220,49 @@ const Canvas = () => {
     };
   };
 
-  // 吹き出しの位置を計算
   const calculateBubblePosition = (pathCenter) => {
     const BUBBLE_WIDTH = 200;
     const BUBBLE_HEIGHT = 100;
-    const SPACING = 50; // パスと吹き出しの間の距離
+    const SPACING = 50;
+    const PATH_SIZE_THRESHOLD = 0.6; // キャンバスの60%以上を占める場合は大きいと判断
 
-    // キャンバスの中央のX座標を計算
-    const middleX = canvasSize.width / 2;
-    
     // パスの範囲を取得
     const pathBounds = getPathBounds(pathData);
     
+    // パスのサイズがキャンバスに対してどれくらいの割合を占めるか計算
+    const pathWidthRatio = pathBounds.width / canvasSize.width;
+    const pathHeightRatio = pathBounds.height / canvasSize.height;
+
+    // パスが大きい場合は中央に配置
+    if (pathWidthRatio > PATH_SIZE_THRESHOLD || pathHeightRatio > PATH_SIZE_THRESHOLD) {
+      return {
+        x: (canvasSize.width - BUBBLE_WIDTH) / 2,
+        y: (canvasSize.height - BUBBLE_HEIGHT) / 2
+      };
+    }
+
+    // 通常の配置ロジック（パスが小さい場合）
+    const middleX = canvasSize.width / 2;
     let bubbleX;
 
     if (pathCenter.x > middleX) {
-      // パスが右側にある場合、パスの左端からSPACING分左に表示
       bubbleX = pathBounds.minX - BUBBLE_WIDTH - SPACING;
     } else {
-      // パスが左側にある場合、パスの右端からSPACING分右に表示
       bubbleX = pathBounds.maxX + SPACING;
     }
 
-    // Y座標は画面の中央に配置
     const bubbleY = (canvasSize.height - BUBBLE_HEIGHT) / 2;
-
-    // キャンバスの境界をチェック（画面外にはみ出さないように）
     bubbleX = Math.max(0, Math.min(canvasSize.width - BUBBLE_WIDTH, bubbleX));
 
     return { x: bubbleX, y: bubbleY };
   };
 
-  // クリックしたとき
   const handleMouseDown = (e) => {
     setDrawing(true);
     const { x, y } = getRelativeCoordinates(e);
     setPathData([{ x, y }]);
   };
 
-  // ドラッグ中の座標を追加
   const handleMouseMove = (e) => {
     if (!drawing) return;
     const { x, y } = getRelativeCoordinates(e);
@@ -229,7 +271,6 @@ const Canvas = () => {
     drawCanvas(newPath, []);
   };
 
-  // クリックが終わったとき
   const handleMouseUp = () => {
     setDrawing(false);
     const selectedData = studentCoordinates.filter((e) =>
@@ -239,38 +280,31 @@ const Canvas = () => {
     drawCanvas(pathData, selectedData);
 
     if (pathData.length > 0) {
-      // パスの中心を計算
       const centerX = pathData.reduce((sum, point) => sum + point.x, 0) / pathData.length;
       const centerY = pathData.reduce((sum, point) => sum + point.y, 0) / pathData.length;
       
-      // 新しい吹き出しの位置を計算
       const newBubblePosition = calculateBubblePosition({ x: centerX, y: centerY });
       setBubblePosition(newBubblePosition);
     }
   };
 
-  // タッチした時
   const handleTouchStart = (e) => {
     handleMouseDown(e);
   };
 
-  // タッチでドラックしているとき
   const handleTouchMove = (e) => {
     handleMouseMove(e);
   };
 
-  // タッチが終わった時
   const handleTouchEnd = () => {
     handleMouseUp();
   };
 
-  // キャンバス描画
   const drawCanvas = (path, selectedStudents) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 背景描画
     for (let x = 0; x < canvas.width; x += 7) {
       for (let y = 0; y < canvas.height; y += 7) {
         const hue = (x / canvas.width) * 360;
@@ -280,24 +314,20 @@ const Canvas = () => {
       }
     }
 
-    // パス描画
     if (path.length > 1) {
       ctx.beginPath();
       ctx.moveTo(path[0].x, path[0].y);
       path.forEach((point) => ctx.lineTo(point.x, point.y));
-      ctx.closePath(); // パスを閉じる
+      ctx.closePath();
     
-      // 塗りつぶし設定
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)'; // 透明度25%の黒
-      ctx.fill(); // 塗りつぶし
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.fill();
     
-      // 線の描画設定
       ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
       ctx.lineWidth = 5;
       ctx.stroke();
     }
 
-    // 学生描画
     selectedStudents.forEach((e) => {
       ctx.beginPath();
       ctx.arc(e.x, e.y, 12, 0, 2 * Math.PI);
@@ -347,6 +377,8 @@ const Canvas = () => {
           selectedDatas={selectedDatas} 
           selectView={selectView} 
           setSelectView={setSelectView}
+          oorNoData={oorNoData}
+          oorData={oorData}
         />
       )}
     </div>
