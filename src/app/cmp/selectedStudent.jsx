@@ -1,23 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ListStudent from '@/app/cmp/listStudent';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
 import NextText from '@/app/cmp/nextText';
 import Image from 'next/image';
-import Link from 'next/link'
+import Link from 'next/link';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../globals.css';
 
-const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
-  const colorCodes = [
-    "#FF5733", "#33FF57", "#5733FF", "#F3FF33", "#33FFF5",
-    "#FF33F5", "#33F5FF", "#F533FF", "#FFC300", "#DAF7A6",
-    "#C70039", "#900C3F", "#581845", "#28B463", "#1F618D",
-    "#AF7AC5", "#F5B041", "#85C1E9", "#45B39D", "#E74C3C"
-  ];
-
+const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oorNoData }) => {
   const [bgColorMain, setBgColorMain] = useState('');
   const [bgColorSub, setBgColorSub] = useState('');
   const [starData, setStarData] = useState([]);
@@ -30,7 +23,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
     const currentData = selectedDatas[realIndex];
     if (currentData) {
       setBgColorMain(currentData.color || '#000');
-      setBgColorSub(colorCodes[realIndex % colorCodes.length] || '#FFF');
+      setBgColorSub(oorNoData[realIndex % oorNoData.length] || '#000');
     }
     setCurrentSlide(realIndex);
   };
@@ -59,7 +52,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
         <Link
           href='/'
           className='absolute left-8 top-1/2 transform -translate-y-1/2 text-[16px] py-2 px-5 text-black rounded-full'
-          style={{boxShadow: '0 0px 8px rgba(0, 0, 0, 0.25)'}}
+          style={{ boxShadow: '0 0px 8px rgba(0, 0, 0, 0.25)' }}
         >TOP</Link>
         <p className="font-bold text-xl text-black">発見した学生一覧</p>
       </header>
@@ -103,27 +96,27 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
                   <div className='flex items-center mt-1'>
                     <div
                       className='w-5 h-5 rounded-full'
-                      style={{backgroundColor: e.color}}
+                      style={{ backgroundColor: e.color }}
                     />
                     <p className='ml-4'>#{e.features_1}</p>
                     <p className='ml-2'>#{e.features_2}</p>
                     <p className='ml-2'>#{e.features_3}</p>
                   </div>
                   <button
-                      className="absolute top-1/2 transform -translate-y-1/2 right-[16px] py-[5px] w-[160px] text-xl text-black rounded-full"
-                      style={{
-                        boxShadow: starData.some(item => item.expo_number === e.expo_number)
-                          ? 'inset 0 0px 8px rgba(0, 0, 0, 0.25)'
-                          : '0 0px 8px rgba(0, 0, 0, 0.25)',
-                        backgroundColor: starData.some(item => item.expo_number === e.expo_number)
-                          ? '#E6EBEF'  // 外側の均等な影
-                          : '#fff',
-                      }}
-                      onClick={() => toggleStar(e)}
-                    >
-                      {starData.some(item => item.expo_number === e.expo_number)
-                        ? 'チェック中'
-                        : '気になる'}
+                    className="absolute top-1/2 transform -translate-y-1/2 right-[16px] py-[5px] w-[160px] text-xl text-black rounded-full"
+                    style={{
+                      boxShadow: starData.some(item => item.expo_number === e.expo_number)
+                        ? 'inset 0 0px 8px rgba(0, 0, 0, 0.25)'
+                        : '0 0px 8px rgba(0, 0, 0, 0.25)',
+                      backgroundColor: starData.some(item => item.expo_number === e.expo_number)
+                        ? '#E6EBEF'
+                        : '#fff',
+                    }}
+                    onClick={() => toggleStar(e)}
+                  >
+                    {starData.some(item => item.expo_number === e.expo_number)
+                      ? 'チェック中'
+                      : '気になる'}
                   </button>
                 </div>
                 <div
@@ -152,6 +145,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
           <Image src="/migi.png" alt="次へ" width={108} height={121} />
         </div>
       </div>
+
       <button
         className="fixed bottom-8 left-8 w-[190px] h-[70px] bg-white rounded-full z-20"
         onClick={() => setStarView(!starView)}
@@ -183,7 +177,8 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView }) => {
       {starView && (
         <ListStudent starData={starData} starView={starView} setStarView={setStarView} />
       )}
-      <NextText text={'空白部分をタップして閉じる'} color={'#fff'}/>
+
+      <NextText text={'空白部分をタップして閉じる'} color={'#fff'} />
     </div>
   );
 };
