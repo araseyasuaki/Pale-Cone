@@ -85,7 +85,6 @@ const Canvas = () => {
 
     fetchData();
   }, []);
-
   useEffect(() => {
     if (data.length > 0) {
       const updatedOorData = selectedDatas.map(item => {

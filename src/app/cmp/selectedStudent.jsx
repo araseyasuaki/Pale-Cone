@@ -98,9 +98,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
                       className='w-5 h-5 rounded-full'
                       style={{ backgroundColor: e.color }}
                     />
-                    <p className='ml-4'>#{e.features_1}</p>
-                    <p className='ml-2'>#{e.features_2}</p>
-                    <p className='ml-2'>#{e.features_3}</p>
+                    <p className='ml-4'>{e.features}</p>
                   </div>
                   <button
                     className="absolute top-1/2 transform -translate-y-1/2 right-[16px] py-[5px] w-[160px] text-xl text-black rounded-full"
