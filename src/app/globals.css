@@ -26,3 +26,20 @@ body {
 .swiper-button-next::after{
   display: none;
 }
+
+
+
+/* アニメーションの設定 */
+@keyframes slideVertically1 {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slideVertically2 {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
