@@ -61,12 +61,12 @@ const page = () => {
           </div>
 
           {/* スライダー1 */}
-          <div className="absolute w-[25%] h-[200%] overflow-hidden top-[-10%] right-[33%] rotate-[17deg]">
+          <div className="absolute w-[25%] h-[200%] overflow-hidden top-[-20%] right-[32%] rotate-[17deg]">
             <ul
               className="slider-list flex flex-col"
               style={{ animation: 'slideVertically1 190s linear infinite' }}
             >
-    {[...userData.slice(0, 32), ...userData.slice(0, 31)].map((e, index) => (
+    {[...userData.slice(0, 31), ...userData.slice(0, 31)].map((e, index) => (
       <li
         key={index}
         className="slider-item w-full h-[20%] aspect-[1920/1080] flex-shrink-0"
@@ -97,7 +97,7 @@ const page = () => {
               className="slider-list flex flex-col"
               style={{ animation: 'slideVertically2 120s linear infinite' }}
             >
-    {[...userData.slice(0, 32), ...userData.slice(32, 63)].map((e, index) => (
+    {[...userData.slice(32, 63), ...userData.slice(32, 63)].map((e, index) => (
       <li
         key={index}
         className="slider-item w-full h-[20%] aspect-[1920/1080] flex-shrink-0"
