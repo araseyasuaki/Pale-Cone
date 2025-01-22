@@ -359,7 +359,7 @@ const Canvas = () => {
             top: bubblePosition.y,
           }}
         >
-          <p className='text-2xl font-bold'>学生{selectedDatas.length}人を発見した</p>
+          <p className='text-2xl font-bold text-black'>学生{selectedDatas.length}人を発見した</p>
           <button
             className='text-white text-2xl font-bold py-[11px] bg-black w-full rounded-full mt-8'
             style={{
