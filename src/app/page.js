@@ -43,7 +43,7 @@ const page = () => {
         >
           <div className="absolute ml-10 top-[20%] transform -translate-y-1/2 z-10">
             <div className="w-[1.2%] bg-black aspect-[10/218] absolute left-0 bottom-0" />
-            <p className="text-[128px] font-bold leading-[120px] ml-5">
+            <p className="text-[128px] font-bold leading-[120px] ml-5 text-black">
               <span
                 style={{
                   background:

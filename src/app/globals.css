@@ -16,7 +16,7 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: #ffffff;
   font-family: 'Noto Sans JP', sans-serif;
 }
 
