@@ -178,7 +178,7 @@ const page = () => {
         width={236}
         height={54}
       />
-      <p className='ml-[0.7vw] mt-[-0.2vw] font-bold text-[1.2vw]'>Tap To Start</p>
+      <p className='ml-[0.7vw] mt-[-0.2vw] font-bold text-[1.2vw] text-black'>Tap To Start</p>
     </div>
 
     </Link>
