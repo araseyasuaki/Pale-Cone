@@ -110,7 +110,7 @@ const page = () => {
       <div className="absolute w-[25%] h-[200%] overflow-hidden top-[-20%] right-[32%] rotate-[17deg]">
         <ul
           className="slider-list flex flex-col"
-          style={{ animation: 'slideVertically1 190s linear infinite' }}
+          style={{ animation: 'slideVertically1 120s linear infinite' }}
         >
           {[...userData.slice(0, 31), ...userData.slice(0, 31)].map((e, index) => (
             <li
