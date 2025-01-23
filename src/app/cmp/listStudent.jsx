@@ -74,7 +74,7 @@ const listStudent = ({ starData, starView, setStarView }) => {
       <header className="w-screen relative h-[60px] bg-white shadow-lg flex justify-center items-center">
         <Link
           href='/'
-          className='absolute left-8 top-1/2 transform -translate-y-1/2 text-[16px] py-2 px-5 text-black rounded-full'
+          className='absolute left-8 top-1/2 transform -translate-y-1/2 text-[16px] py-2 px-5 text-black rounded-full transition duration-300 hover:scale-110 hover:bg-[#E6EBEF]'
           style={{boxShadow: '0 0px 8px rgba(0, 0, 0, 0.25)'}}
         >TOP</Link>
         <p className="font-bold text-xl text-black">気になるリスト</p>

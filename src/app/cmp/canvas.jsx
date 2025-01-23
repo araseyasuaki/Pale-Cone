@@ -369,7 +369,7 @@ const Canvas = () => {
           > */}
             <button
     className={`text-white text-2xl font-bold py-[11px] bg-black w-full rounded-full mt-8 
-      transition duration-300 transform 
+      transition duration-300 transform
       ${selectedDatas.length === 0 ? 'opacity-20' : 'hover:opacity-50 hover:scale-110'}`}
     onClick={() => setSelectView(!selectView)}
     disabled={selectedDatas.length === 0}
