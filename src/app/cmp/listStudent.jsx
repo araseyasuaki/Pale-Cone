@@ -3,6 +3,7 @@ import Link from 'next/link'
 import supabase from '../supabase'; // Supabaseクライアントをインポート
 import QRCode from 'react-qr-code'; // QRコード生成用ライブラリをインポート
 import html2canvas from 'html2canvas'; // スクリーンショットを撮るためのライブラリをインポート
+import MoonLoader from 'react-spinners/MoonLoader';
 
 const listStudent = ({ starData, starView, setStarView }) => {
 
@@ -120,7 +121,19 @@ const listStudent = ({ starData, starView, setStarView }) => {
         </div>
 
         <div className='w-[320px] h-[320px] mx-5 flex justify-center items-center bg-white rounded-xl'>
-          {uploading && <p className="text-black text-xl font-bold">アップロード中...</p>}
+          {uploading &&
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <MoonLoader
+                  cssOverride={{ borderColor: 'red' }} // 任意のCSSプロパティを指定可能
+                  loading={true} // ローダーを表示するかどうか
+                  size={64} // ローダーのサイズ
+                  speedMultiplier={0.7} // アニメーション速度の倍率
+                />
+              </div>
+              <p className="text-black text-xl font-bold mt-4">QR生成中...</p>
+            </div>
+          }
           {imageUrl && (
             <QRCode value={imageUrl} size={256} />
           )}
