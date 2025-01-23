@@ -98,7 +98,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
                       className='w-5 h-5 rounded-full'
                       style={{ backgroundColor: e.color }}
                     />
-                    <p className='ml-4'>{e.features}</p>
+                    <p className='ml-4 text-black'>{e.features}</p>
                   </div>
                   <button
                     className="absolute top-1/2 transform -translate-y-1/2 right-[16px] py-[5px] w-[160px] text-xl text-black rounded-full"
@@ -162,7 +162,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
               <div className="absolute w-[22px] h-[2px] bg-black rounded-full transform rotate-45"></div>
               <div className="absolute w-[22px] h-[2px] bg-black rounded-full transform -rotate-45"></div>
             </div>
-            <p className="tex-[16px] font-bold mx-auto">閉じる</p>
+            <p className="tex-[16px] font-bold mx-auto text-black">閉じる</p>
           </div>
         ) : (
           <div className="flex items-center">
@@ -173,7 +173,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
               alt="気になるリストのQRコード"
               className="ml-5"
             />
-            <p className="tex-[16px] font-bold h-fit my-[3px] ml-2">気になるリスト</p>
+            <p className="tex-[16px] font-bold h-fit my-[3px] ml-2 text-black">気になるリスト</p>
           </div>
         )}
       </button>
