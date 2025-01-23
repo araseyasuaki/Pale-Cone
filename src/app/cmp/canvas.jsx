@@ -359,14 +359,6 @@ const Canvas = () => {
           }}
         >
           <p className='text-2xl font-bold text-black'>学生{selectedDatas.length}人を発見した</p>
-          {/* <button
-            className='text-white text-2xl font-bold py-[11px] bg-black w-full rounded-full mt-8'
-            style={{
-              opacity: selectedDatas.length === 0 ? 0.2 : 1,
-            }}
-            onClick={() => setSelectView(!selectView)}
-            disabled={selectedDatas.length === 0}
-          > */}
             <button
     className={`text-white text-2xl font-bold py-[11px] bg-black w-full rounded-full mt-8 
       transition duration-300 transform

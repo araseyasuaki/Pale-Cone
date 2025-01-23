@@ -17,7 +17,8 @@ const NextText = ({ text, color }) => {
 
   const textStyle = {
     position: 'fixed',
-    right: '32px',
+    left: '50%',
+    transform: 'translateX(-50%)',
     bottom: '32px',
     fontSize: '20px',
     color: color,
