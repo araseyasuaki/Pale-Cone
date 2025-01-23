@@ -151,7 +151,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
       </div>
 
       <button
-        className="fixed bottom-8 left-8 w-[190px] h-[70px] bg-white rounded-full z-20"
+        className="fixed bottom-8 right-8 w-[190px] h-[70px] bg-white rounded-full z-20"
         onClick={() => setStarView(!starView)}
         disabled={starData.length === 0}
         style={{ opacity: starData.length === 0 ? 0.5 : 1 }}
