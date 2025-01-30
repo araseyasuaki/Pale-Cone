@@ -5,6 +5,7 @@ import { Pagination, Navigation } from 'swiper/modules';
 import NextText from '@/app/cmp/nextText';
 import Image from 'next/image';
 import Link from 'next/link';
+import CmsData from '../libs/microcms'
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -16,6 +17,8 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
   const [starData, setStarData] = useState([]);
   const [starView, setStarView] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [text, setText] = useState(new Array(selectedDatas.length).fill(true));
+  const [number, setNumber] = useState('0')
 
   const handleSlideChange = (swiper) => {
     if (!selectedDatas || selectedDatas.length === 0) return;
@@ -26,15 +29,24 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
       setBgColorSub(oorNoData[realIndex % oorNoData.length] || '#000');
     }
     setCurrentSlide(realIndex);
+    setNumber(realIndex);  // 修正: ここをcurrentDataではなくrealIndexに変更
   };
 
+  const textBtn = () => {
+    setText((prevText) => {
+      const updatedText = [...prevText];
+      updatedText[number] = !updatedText[number];
+      return updatedText;
+    });
+  }
+
   const toggleStar = (e) => {
-    setStarData((prevstar) => {
-      const exists = prevstar.some(item => item.expo_number === e.expo_number);
+    setStarData((prevStar) => {
+      const exists = prevStar.some(item => item.expo_number === e.expo_number);
       if (exists) {
-        return prevstar.filter(item => item.expo_number !== e.expo_number);
+        return prevStar.filter(item => item.expo_number !== e.expo_number);
       } else {
-        return [...prevstar, { expo_number: e.expo_number, color: e.color }];
+        return [...prevStar, { expo_number: e.expo_number, color: e.color }];
       }
     });
   };
@@ -48,6 +60,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
         className="fixed w-screen h-screen top-0 left-0 -z-10"
         onClick={() => setSelectView(!selectView)}
       />
+
       <header className="w-screen relative h-[60px] bg-white shadow-lg flex justify-center items-center">
         <Link
           href='/'
@@ -56,6 +69,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
         >TOP</Link>
         <p className="font-bold text-xl text-black">発見した学生一覧</p>
       </header>
+
       <div className="w-[60%] m-auto mt-[3%] relative">
         <Swiper
           modules={[Pagination, Navigation]}
@@ -117,11 +131,37 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
                       : '気になる'}
                   </button>
                 </div>
+
                 <div
-                  className="flex w-full h-full justify-center items-center px-20 overflow-y-scroll"
-                  style={{ height: "calc(100% - 100px)" }}
+                  className="flex relative w-full h-full justify-center items-center overflow-y-scroll group"
+                  style={{
+                    height: "calc(100% - 100px)",
+                  }}
                 >
-                  <p className="text-2xl text-black">{e.forward}</p>
+                  <Image
+                    className="absolute h-full w-auto"
+                    src={e.firstview.url}
+                    alt="学生のキービジュアル"
+                    width={1920}
+                    height={1080}
+                  />
+                  <div className="absolute w-full h-full top-0 left-0 bg-white opacity-80 rounded-bl-xl rounded-br-xl" />
+                  {text[number] ?
+                    <button onClick={textBtn} className='w-full h-full'>
+                      <p className="p-20 relative z-10 text-2xl text-black font-bold group-hover:opacity-50 group-hover:scale-110 transition duration-300 text-start">
+                        {e.forward}
+                      </p>
+                    </button>
+                    :
+                    <button onClick={textBtn} className='w-full h-full'>
+                      <div className='p-20 relative z-10 text-start group-hover:opacity-50 group-hover:scale-110 transition duration-300'>
+                        <h3 className='text-xl font-bold text-black'>サイト＆アプリ名</h3>
+                        <p className='text-2xl text-black pt-1 pl-4'>{e.site_name}</p>
+                        <h3 className='text-xl font-bold text-black pt-5'>コンセプト</h3>
+                        <p className='text-2xl text-black pt-1 pl-4'>{e.site_concept}</p>
+                      </div>
+                    </button>
+                  }
                 </div>
               </div>
             </SwiperSlide>
@@ -179,7 +219,7 @@ const SelectedStudent = ({ selectedDatas, selectView, setSelectView, oorData, oo
       </button>
 
       {starView && (
-        <ListStudent starData={starData} starView={starView} setStarView={setStarView} />
+        <ListStudent starData={starData} starView={starView} selectedDatas={selectedDatas}/>
       )}
 
       <NextText text={'空白部分をタップして閉じる'} color={'#fff'} />
