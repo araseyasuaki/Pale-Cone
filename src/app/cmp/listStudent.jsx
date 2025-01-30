@@ -5,7 +5,7 @@ import QRCode from 'react-qr-code'; // QRコード生成用ライブラリをイ
 import html2canvas from 'html2canvas'; // スクリーンショットを撮るためのライブラリをインポート
 import MoonLoader from 'react-spinners/MoonLoader';
 
-const listStudent = ({ starData, starView, setStarView }) => {
+const listStudent = ({ starData, starView, selectedDatas }) => {
 
   const captureRef = useRef(null); // スクリーンショット対象の要素参照
   const [imageUrl, setImageUrl] = useState(null); // アップロード後の画像URL
@@ -71,7 +71,7 @@ const listStudent = ({ starData, starView, setStarView }) => {
   return (
     <div className='fixed w-screen h-screen top-0 left-0 bg-[#E6EBEF] z-10'>
 
-      <header className="w-screen relative h-[60px] bg-white shadow-lg flex justify-center items-center">
+      <header className="w-screen relative h-[60px] bg-white shadow-lg flex justify-center items-center z-30">
         <Link
           href='/'
           className='absolute left-8 top-1/2 transform -translate-y-1/2 text-[16px] py-2 px-5 text-black rounded-full transition duration-300 hover:scale-110 hover:bg-[#E6EBEF]'
@@ -86,24 +86,34 @@ const listStudent = ({ starData, starView, setStarView }) => {
       >
         <div className='relative mx-5'>
           <div
+            className="w-fit p-[10px] text-center"
             ref={captureRef}
-            className="flex flex-wrap w-fit max-w-[410px] p-[10px]"
           >
+            <h3 className='text-xl mb-10'>気になるリスト一覧<br/>（ブース番号表記）</h3>
             {starData.map((e) => (
               <div
+                className='flex items-center'
                 key={e.expo_number}
-                className="w-[55px] h-[55px] rounded-full m-[5px]"
-                style={{ backgroundColor: e.color }}
               >
-                <p className="w-[55px] text-white text-center text-2xl font-bold" >
-                  {e.expo_number}
+                <div
+                  className="w-[55px] h-[55px] rounded-full m-[5px]"
+                  style={{ backgroundColor: e.color }}
+                >
+                  <p className="w-[55px] text-white text-center text-2xl font-bold" >
+                    {e.expo_number}
+                  </p>
+                </div>
+                <p className='text-2xl text-black h-[35px] ml-2'>
+                  {selectedDatas.find(item => item.expo_number === e.expo_number)?.name || "データなし"}
                 </p>
               </div>
             ))}
           </div>
 
+          <div className='absolute bg-[#E6EBEF] w-full h-full z-10 top-0 left-0'/>
+
           <div
-            className="flex flex-wrap w-fit absolute top-0 left-0 max-w-[410px] p-[10px] rounded-xl"
+            className="flex flex-wrap w-fit absolute z-20 top-1/2 right-0 transform -translate-y-1/2 max-w-[410px] p-[10px] rounded-xl"
             style={{boxShadow: 'inset 0 0px 8px rgba(0, 0, 0, 0.25)'}}
           >
             {starData.map((e) => (
