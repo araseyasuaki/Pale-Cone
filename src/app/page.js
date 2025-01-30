@@ -1,36 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { client } from './libs/microcms';
+import CmsData from './libs/microcms'
 import Link from 'next/link';
 import Image from 'next/image';
 
 const page = () => {
 
-  const [userData, setUserData] = useState([]);
-
-  // 学生情報取得
-  useEffect(() => {
-    const fetchData = async () => {
-      const limit = 100;
-      let allData = [];
-      let offset = 0;
-      while (true) {
-        const data = await client.get({
-          endpoint: 'works',
-          queries: {
-            limit,
-            offset,
-          },
-        });
-        allData = [...allData, ...data.contents];
-        if (data.contents.length < limit) break;
-        offset += limit;
-      }
-      setUserData(allData);
-    };
-    fetchData();
-  }, []);
+  const { userData } = CmsData();
 
   return (
     <Link
@@ -120,53 +97,53 @@ const page = () => {
                 height: 'auto',
               }}
             >
-        <img
-          className="my-[8%] h-[84%]"
-          src={e.firstview.url}
-          alt="キービジュアル装飾"
-          width={e.firstview.width}
-          height={e.firstview.height}
-          style={{
-            objectFit: 'cover', // 画像を枠に合わせて拡大
-            borderRadius: '8px',
-            border: '2px solid black',
-          }}
-        />
-      </li>
-    ))}
-  </ul>
-          </div>
+              <img
+                className="my-[8%] h-[84%]"
+                src={e.firstview.url}
+                alt="キービジュアル装飾"
+                width={e.firstview.width}
+                height={e.firstview.height}
+                style={{
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  border: '2px solid black',
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
 
-          {/* スライダー2:上〜下 */}
-          <div className="absolute w-[25%] h-[200%] overflow-hidden bottom-[-90%] right-[5%] rotate-[17deg]">
-            <ul
-              className="slider-list flex flex-col"
-              style={{ animation: 'slideVertically2 120s linear infinite' }}
+      {/* スライダー2:上〜下 */}
+      <div className="absolute w-[25%] h-[200%] overflow-hidden bottom-[-90%] right-[5%] rotate-[17deg]">
+        <ul
+          className="slider-list flex flex-col"
+          style={{ animation: 'slideVertically2 120s linear infinite' }}
+        >
+          {[...userData.slice(32, 63), ...userData.slice(32, 63)].map((e, index) => (
+            <li
+              key={index}
+              className="slider-item w-full h-[20%] aspect-[1920/1080] flex-shrink-0"
+              style={{
+                height: 'auto',
+              }}
             >
-    {[...userData.slice(32, 63), ...userData.slice(32, 63)].map((e, index) => (
-      <li
-        key={index}
-        className="slider-item w-full h-[20%] aspect-[1920/1080] flex-shrink-0"
-        style={{
-          height: 'auto', // 画像の高さに合わせてliの高さを調整
-        }}
-      >
-        <img
-          className="my-[8%] h-[84%]"
-          src={e.firstview.url}
-          alt="キービジュアル装飾"
-          width={e.firstview.width}
-          height={e.firstview.height}
-          style={{
-            objectFit: 'cover', // 画像を枠に合わせて拡大
-            borderRadius: '8px',
-            border: '2px solid black',
-          }}
-        />
-      </li>
-    ))}
-  </ul>
-          </div>
+              <img
+                className="my-[8%] h-[84%]"
+                src={e.firstview.url}
+                alt="キービジュアル装飾"
+                width={e.firstview.width}
+                height={e.firstview.height}
+                style={{
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  border: '2px solid black',
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
 
     </div>
 
