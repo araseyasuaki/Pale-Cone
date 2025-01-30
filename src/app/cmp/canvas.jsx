@@ -65,6 +65,20 @@ const Canvas = () => {
   const [oorData, setOorData] = useState([]);
   const [oorNoData, setOorNoData] = useState([]);
 
+  userData.forEach(item => {
+    if (item.expo_number >= "26" && item.expo_number <= "34") {
+      item.site_name = "キッズダンススクール「リアクションダンススクール」LP制作";
+    } else if (item.expo_number >= "35" && item.expo_number <= "41") {
+      item.site_name = "TripQuest」スペシャルコンテンツ・サイト制作";
+    } else if (item.expo_number >= "42" && item.expo_number <= "48") {
+      item.site_name = "イヤホン・ヘッドホン専門店「e☆イヤホン」JECサイトのサイトリニューアル";
+    } else if (item.expo_number >= "49" && item.expo_number <= "54") {
+      item.site_name = "名刺管理サービス「QuickCard」ランディングページ制作";
+    } else if (item.expo_number >= "55" && item.expo_number <= "62") {
+      item.site_name = "MTG作成会議システムZION-MEETのランディングページ制作";
+    }
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
