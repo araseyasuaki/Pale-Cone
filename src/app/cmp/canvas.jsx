@@ -66,18 +66,25 @@ const Canvas = () => {
   const [oorNoData, setOorNoData] = useState([]);
 
   userData.forEach(item => {
-    if (item.expo_number >= "26" && item.expo_number <= "34") {
+    // 文字列を数値に変換
+    const expoNum = parseInt(item.expo_number);
+    
+    if (expoNum >= 26 && expoNum <= 34) {
       item.site_name = "キッズダンススクール「リアクションダンススクール」LP制作";
-    } else if (item.expo_number >= "35" && item.expo_number <= "41") {
-      item.site_name = "TripQuest」スペシャルコンテンツ・サイト制作";
-    } else if (item.expo_number >= "42" && item.expo_number <= "48") {
+    } else if (expoNum >= 35 && expoNum <= 41) {
+      item.site_name = "「TripQuest」スペシャルコンテンツ・サイト制作";
+    } else if (expoNum >= 42 && expoNum <= 48) {
       item.site_name = "イヤホン・ヘッドホン専門店「e☆イヤホン」JECサイトのサイトリニューアル";
-    } else if (item.expo_number >= "49" && item.expo_number <= "54") {
+    } else if (expoNum >= 49 && expoNum <= 54) {
       item.site_name = "名刺管理サービス「QuickCard」ランディングページ制作";
-    } else if (item.expo_number >= "55" && item.expo_number <= "62") {
+    } else if (expoNum >= 55 && expoNum <= 62) {
       item.site_name = "MTG作成会議システムZION-MEETのランディングページ制作";
     }
   });
+  //   return item;
+  // });
+  
+  
 
   useEffect(() => {
     const fetchData = async () => {
