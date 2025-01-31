@@ -103,7 +103,7 @@ const listStudent = ({ starData, starView, selectedDatas }) => {
                     {e.expo_number}
                   </p>
                 </div>
-                <p className='text-2xl text-black h-[35px] ml-2 mb-2'>
+                <p className='text-2xl text-black h-[35px] ml-2 mb-4'>
                   {selectedDatas.find(item => item.expo_number === e.expo_number)?.name || "データなし"}
                 </p>
               </div>
